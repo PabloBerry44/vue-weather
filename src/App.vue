@@ -7,7 +7,8 @@
       :username="username"
       v-if="userLoggedIn"
       :users="users"
-      @addCity="savePlace"/>
+      @addCity="savePlace"
+      @removeCity="deletePlace"/>
 </template>
 
 <script setup>
@@ -52,6 +53,15 @@
         }
 
         saveValues()
+    }
+
+    const deletePlace = (login, givenCity) => {
+        const index = getIndex(login)
+
+        console.log(index)
+
+        users.value[index].savedCities = users.value[index].savedCities.filter((city)=> (city != givenCity))
+        console.log
     }
 
     const getIndex = (login) => {
