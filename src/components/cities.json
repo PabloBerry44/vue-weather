@@ -1,0 +1,312 @@
+[
+    {
+        "id": 759734,
+        "name": "Rzeszów",
+        "state": "",
+        "country": "PL",
+        "coord": {
+            "lon": 21.99901,
+            "lat": 50.041321
+        }
+    },
+    {
+        "id": 6695624,
+        "name": "Warszawa",
+        "state": "",
+        "country": "PL",
+        "coord": {
+            "lon": 21.04191,
+            "lat": 52.23547
+        }
+    },
+    {
+        "id": 3094802,
+        "name": "Kraków",
+        "state": "",
+        "country": "PL",
+        "coord": {
+            "lon": 19.91667,
+            "lat": 50.083328
+        }
+    },
+    {
+        "id": 3081368,
+        "name": "Wrocław",
+        "state": "",
+        "country": "PL",
+        "coord": {
+            "lon": 17.033331,
+            "lat": 51.099998
+        }
+    },
+    {
+        "id": 765876,
+        "name": "Lublin",
+        "state": "",
+        "country": "PL",
+        "coord": {
+            "lon": 22.566669,
+            "lat": 51.25
+        }
+    },
+    {
+        "id": 5128638,
+        "name": "New York",
+        "state": "NY",
+        "country": "US",
+        "coord": {
+            "lon": -75.499901,
+            "lat": 43.000351
+        }
+    },
+    {
+        "id": 2643743,
+        "name": "London",
+        "state": "",
+        "country": "GB",
+        "coord": {
+            "lon": -0.12574,
+            "lat": 51.50853
+        }
+    },
+    {
+        "id": 2968815,
+        "name": "Paris",
+        "state": "",
+        "country": "FR",
+        "coord": {
+            "lon": 2.3486,
+            "lat": 48.853401
+        }
+    },
+    {
+        "id": 3067696,
+        "name": "Prague",
+        "state": "",
+        "country": "CZ",
+        "coord": {
+            "lon": 14.42076,
+            "lat": 50.088039
+        }
+    },
+    {
+        "id": 2510911,
+        "name": "Sevilla",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -5.97613,
+            "lat": 37.382408
+        }
+    },
+    {
+        "id": 2520600,
+        "name": "Cadiz",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -6.29944,
+            "lat": 36.533611
+        }
+    },
+    {
+        "id": 2514256,
+        "name": "Málaga",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -4.42034,
+            "lat": 36.720161
+        }
+    },
+    {
+        "id": 2514273,
+        "name": "Majaneque",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -4.86667,
+            "lat": 37.833328
+        }
+    },
+    {
+        "id": 2514279,
+        "name": "Majadas",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -5.74589,
+            "lat": 39.942909
+        }
+    },
+    {
+        "id": 2514287,
+        "name": "Mairena del Aljarafe",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -6.06391,
+            "lat": 37.344608
+        }
+    },
+    {
+        "id": 2514288,
+        "name": "Mairena del Alcor",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -5.74952,
+            "lat": 37.373009
+        }
+    },
+    {
+        "id": 2514297,
+        "name": "Mahora",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -1.73333,
+            "lat": 39.216671
+        }
+    },
+    {
+        "id": 2514301,
+        "name": "Maó",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": 4.26583,
+            "lat": 39.888531
+        }
+    },
+    {
+        "id": 2514304,
+        "name": "Maguilla",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -5.83333,
+            "lat": 38.366669
+        }
+    },
+    {
+        "id": 2514305,
+        "name": "Máguez",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -13.49293,
+            "lat": 29.160089
+        }
+    },
+    {
+        "id": 2514314,
+        "name": "Magán",
+        "state": "",
+        "country": "ES",
+        "coord": {
+            "lon": -3.93164,
+            "lat": 39.96138
+        }
+    },
+    {
+        "id": 981139,
+        "name": "Lyndhurst",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 28.109051,
+            "lat": -26.12752
+        }
+    },
+    {
+        "id": 981158,
+        "name": "Lydenburg",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 30.459669,
+            "lat": -25.097799
+        }
+    },
+    {
+        "id": 981827,
+        "name": "Louis Trichardt",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 29.903191,
+            "lat": -23.04385
+        }
+    },
+    {
+        "id": 982103,
+        "name": "Lorraine",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 25.51545,
+            "lat": -33.967232
+        }
+    },
+    {
+        "id": 982332,
+        "name": "Lombardy East",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 28.124729,
+            "lat": -26.11832
+        }
+    },
+    {
+        "id": 982393,
+        "name": "Lokaleng",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 25.570009,
+            "lat": -25.798679
+        }
+    },
+    {
+        "id": 982587,
+        "name": "Little Falls",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 27.89085,
+            "lat": -26.12092
+        }
+    },
+    {
+        "id": 982701,
+        "name": "Lindley",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 27.913481,
+            "lat": -27.879101
+        }
+    },
+    {
+        "id": 3169070,
+        "name": "Rome",
+        "state": "",
+        "country": "IT",
+        "coord": {
+            "lon": 12.4839,
+            "lat": 41.894741
+        }
+    },
+    {
+        "id": 941812,
+        "name": "Waterfall",
+        "state": "",
+        "country": "ZA",
+        "coord": {
+            "lon": 31.05022,
+            "lat": -29.40661
+        }
+    }
+]
