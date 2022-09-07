@@ -235,7 +235,7 @@ const getForecast = async (givenName) => {
     }
 
     
-    let response = await fetch("http://api.openweathermap.org/data/2.5/forecast?q="+givenName+"&appid="+apiKey+'&units=metric')
+    let response = await fetch("https://api.openweathermap.org/data/2.5/forecast?q="+givenName+"&appid="+apiKey+'&units=metric')
     const upcoming = await response.json()
     if(!response.ok) return
 
@@ -249,7 +249,7 @@ const getForecast = async (givenName) => {
                 name: weekdays[day],
                 temp: Math.round(item.main.temp)+'°',
                 weather: item.weather[0].description,
-                iconUrl: "http://openweathermap.org/img/wn/"+item.weather[0].icon+"@2x.png",
+                iconUrl: "https://openweathermap.org/img/wn/"+item.weather[0].icon+"@2x.png",
                 windSpeed: Math.round(item.wind.speed * 3.6)
             })
         }
