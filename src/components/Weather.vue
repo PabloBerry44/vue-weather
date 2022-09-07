@@ -17,7 +17,7 @@
                         </div>
                     </form>
 
-                    <div class="savedCitiesWrapper">
+                    <div class="savedCitiesWrapper" v-if="currentUser.savedCities.length > 0">
                         <p>Your saved places</p>
                         <div class="savedCities">
                             <p v-for="city in currentUser.savedCities" @click="getForecast(city), showMenu = false">{{city}}</p>
@@ -50,7 +50,7 @@
                     </div>
                 </form>
 
-                <div class="savedCitiesWrapper">
+                <div class="savedCitiesWrapper" v-if="currentUser.savedCities.length > 0">
                     <p>Your saved places</p>
                     <div class="savedCities">
                         <p v-for="city in currentUser.savedCities" @click="getForecast(city)">{{city}}</p>
@@ -66,7 +66,7 @@
                         </div>
                         <div style="width: 9em">
                             <img src="./wind.webp" alt="wind:" class="forecastIcon wind">
-                            {{forecastDay.windSpeed}}km/h
+                            <p>{{forecastDay.windSpeed}}<span style="font-size: .7rem; color: gray;">km/h</span></p>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,8 @@
 
 
             <div class="weather">
-                <ion-icon name="add-outline" class="addCityIcon" @click="$emit('addCity', props.username, currentCity)"></ion-icon>
+                <ion-icon v-if="!currentUser.savedCities.includes(weather.city)" name="add-outline" class="addCityIcon" @click="$emit('addCity', props.username, weather.city)"></ion-icon>
+                <ion-icon v-if="currentUser.savedCities.includes(weather.city)" name="remove-outline" class="addCityIcon" @click="$emit('removeCity', props.username, weather.city)"></ion-icon>
 
                 <p class="localization">{{weather.city}}, {{weather.country}}</p>
                 <p class="temperature">{{weather.temp}}°</p>
@@ -93,7 +94,25 @@
                         </div>
                         <div style="width: 9em">
                             <img src="./wind.webp" alt="wind:" class="forecastIcon wind">
-                            {{forecastDay.windSpeed}}km/h
+                            <p>{{forecastDay.windSpeed}}<span style="font-size: .7rem; color: gray;">km/h</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rainForecast">
+                    <p>Chance of rain:</p>
+                    <div class="columnContainer">
+                        <div class="columnWrapper">
+                            <div class="columnScale">
+                                <p>100</p>
+                                <p>50</p>
+                                <p>0</p>
+                            </div>
+                            <p style="color: gray;">%</p>
+                        </div>
+                        <div class="columnWrapper" v-for="data of nextFiveHour">
+                            <div class="column" :style="{height: (data.pop*1.7)+'px'}"></div>
+                            <p>{{data.time}}</p>
                         </div>
                     </div>
                 </div>
@@ -169,6 +188,7 @@ const currentUser = ref()
 const showMenu = ref(false)
 const forecast = ref([])
 const currentCity = ref('Rzeszów')
+const nextFiveHour = ref([])
 
 for(let i=0; i<props.users.length; i++) {
     if(props.users[i].login == props.username) {
@@ -198,6 +218,8 @@ const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 const weekdaysInOrder = ref([])
 
 const getForecast = async (givenName) => {
+
+    showMenu.value = false
 
     currentCity.value = givenName
 
@@ -232,6 +254,18 @@ const getForecast = async (givenName) => {
             })
         }
     }
+
+    nextFiveHour.value = []
+    for(let i=0; i<5; i++) {
+        const data = upcoming.list[i]
+
+        nextFiveHour.value.push({
+            pop: Math.round(data.pop*100),
+            time: data.dt_txt.substring(11, 13)
+        })
+    }
+
+
 
 
     response = await fetch("https://api.openweathermap.org/data/2.5/weather?q="+givenName+"&appid="+apiKey+"&units=metric")
@@ -313,7 +347,7 @@ getForecast('Prague')
         background: rgb(159, 159, 252);
         border-radius: 20px;
         gap: 1em;
-        align-items:flex-start;
+        align-items: flex-start;
     }
 
     .welcome {
@@ -470,6 +504,42 @@ getForecast('Prague')
     .slide-enter-from, .slide-leave-to {
         transform: translateX(-100%);
     }
+
+    .rainForecast {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-top: 2em;
+        gap: 1.3em;
+    }
+    .columnContainer {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+        .columnWrapper {
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            align-items: center;
+
+        }
+        .columnScale {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            color: gray;
+        }
+        .column {
+            background: rgb(78, 169, 255);
+            width: 1em;
+            border-radius: 10px;
+            min-height: 2px;
+        }
+
 
 
 
