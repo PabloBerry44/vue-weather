@@ -1,19 +1,2 @@
-# vue-weather
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+<h1><a href="https://pabloberry44.github.io/vue-weather/">Weather Forecast in Vue</a></h1>
+<p>This simple Web App allows user to check current weather and forecast for the next 5 days. User can choose between units of measurement to be displayed, save favourite places and view more information about upcoming days by simply clicking on them. There is also a diagram that shows probability of precipitation for the next 15 hours. App looks good on mobile devices and desktops.</p>
