@@ -71,7 +71,9 @@ const authorize = () => {
                     users.push({
                         login: inputLogin.value,
                         pass: inputPass.value,
-                        savedCities: []
+                        savedCities: [],
+                        celsius: false,
+                        mph: true
                     })
                     toastVisible.value = true
                     setTimeout(()=> {toastVisible.value = false}, 1500)
@@ -111,7 +113,6 @@ const authorize = () => {
         flex-direction: column;
         background: rgb(17, 14, 61);
     }
-
     .container {
         display: flex;
         align-items: center;
@@ -129,7 +130,6 @@ const authorize = () => {
         0px 0px 33.4px rgba(0, 0, 0, 0.05),
         0px 0px 80px rgba(0, 0, 0, 0.07);
     }
-
     .loginForm {
         margin-inline: auto;
         display: flex;
@@ -137,11 +137,9 @@ const authorize = () => {
         width: 80%;
         max-width: 300px;
     }
-
     .wrongMessage {
         color: rgb(202, 0, 0);
     }
-
     form input {
         background: rgb(247, 247, 247);
         border-radius: 10px;
@@ -155,7 +153,6 @@ const authorize = () => {
     form label {
         margin-top: 1em;
     }
-
     form button {
         background: rgb(247, 247, 247);
         margin-top: 1em;
@@ -170,7 +167,6 @@ const authorize = () => {
         cursor: pointer;
         color: black;
     }
-
     .toast {
         position: absolute;
         background: rgb(206, 206, 255);
@@ -185,15 +181,12 @@ const authorize = () => {
         0px 0px 33.4px rgba(0, 0, 0, 0.05),
         0px 0px 80px rgba(0, 0, 0, 0.07);
     }
-
     .toggleForm {
         cursor: pointer;
     }
-
     .fade-enter-active, .fade-leave-active {
         transition: 300ms;
     }
-
     .fade-enter-from, .fade-leave-to {
         opacity: 0;
     }

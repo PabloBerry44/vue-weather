@@ -8,7 +8,8 @@
       v-if="userLoggedIn"
       :users="users"
       @addCity="savePlace"
-      @removeCity="deletePlace"/>
+      @removeCity="deletePlace"
+      @toggleValue="changeUnits"/>
 </template>
 
 <script setup>
@@ -23,7 +24,9 @@
     {
         login: 'admin',
         pass: 'admin',
-        savedCities: []
+        savedCities: ["Seville", "Prague", "Rio De Janeiro"],
+        celsius: true,
+        mph: false
     }])
 
     const getValues = () => {
@@ -40,28 +43,34 @@
             username.value = passedUsername
             userLoggedIn.value = true
         }
-
     }
 
     const savePlace = (login, givenCity) => {
         const index = getIndex(login)
-
         if(
           users.value[index].savedCities.length < 10 &&
           !users.value[index].savedCities.includes(givenCity)) {
             users.value[index].savedCities.push(givenCity)
         }
-
         saveValues()
     }
 
     const deletePlace = (login, givenCity) => {
         const index = getIndex(login)
-
-        console.log(index)
-
         users.value[index].savedCities = users.value[index].savedCities.filter((city)=> (city != givenCity))
-        console.log
+    }
+
+    const changeUnits = (login, property, value) => {
+        const index = getIndex(login)
+
+        if(property === 'deg'){
+            users.value[index].celsius = !users.value[index].celsius
+        }
+        if(property === 'speed') {
+            users.value[index].mph = !users.value[index].mph
+        }
+        saveValues()
+        
     }
 
     const getIndex = (login) => {
