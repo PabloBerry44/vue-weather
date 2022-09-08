@@ -284,6 +284,7 @@ setInterval(()=> {
         justify-content: center;
         background: rgb(159, 159, 252);
         min-height: 100vh;
+        overflow-x: hidden;
     }
     form {
         display: flex;
