@@ -1,99 +1,177 @@
 <template>
 
     <div class="container">
-        <Transition name="slide">
-            <div class="menu" v-if="!viewportWidth() && showMenu">
 
-                <div class="listOfCities">
+        <!-- Menu for mobile devices, slide from left -->
+        <Transition name="slide">
+            <div class="menu" v-if="!largeDevice() && showMenu">
+                <div class="leftSection">
                     <div class="row">
                         <p class="welcome">Hello {{props.username}}!</p>
                         <ion-icon name="close-outline" @click="showMenu = !showMenu" class="icon"></ion-icon>
                     </div>
 
-                    <form @submit.prevent="getForecast(searchValue)">
-                        <input type="search" placeholder="Search for city" v-model="searchValue" @input="filterCities()">
-                        <div class="dropdownList" v-if="searchValue.length > 0">
-                            <p v-for="city in filteredCities" @click="getForecast(city.name), showMenu = false">{{city.name}}</p>
-                        </div>
+                    <form @submit.prevent="getForecast(searchValue), showMenu = false">
+                        <input type="search" placeholder="Search for city" v-model="searchValue">
+                        <ion-icon @click="getForecast(searchValue), showMenu = false" style="font-size:2rem; cursor: pointer;" name="search-outline"></ion-icon>
                     </form>
 
-                    <div class="savedCitiesWrapper">
+                    <div class="savedCitiesWrapper" v-if="currentUser.savedCities.length > 0">
                         <p>Your saved places</p>
                         <div class="savedCities">
                             <p v-for="city in currentUser.savedCities" @click="getForecast(city), showMenu = false">{{city}}</p>
+                        </div>
+                    </div>
+
+                    <div class="options">
+                        <div class="row toggleRow" @click="$emit('toggleValue', props.username, 'deg'), getForecast(currentCity)">
+                            <Transition name="slide-up">
+                                <div v-if="!currentUser.celsius" class="value">Fahrenheit</div>
+                                <div v-else class="value">Celsius</div>
+                            </Transition>
+                        </div>
+                        <div class="row toggleRow" @click="$emit('toggleValue', props.username, 'speed'), getForecast(currentCity)">
+                            <Transition name="slide-up">
+                                <div v-if="!currentUser.mph" class="value" >km/h</div>
+                                <div v-else class="value">mph</div>
+                            </Transition>
                         </div>
                     </div>
                 </div>
             </div>  
         </Transition>
 
-
-
         <div class="wrapper">
 
-            <div class="row" v-if="!viewportWidth()">
+            <!-- Welcome row displayed on mobile devices -->
+            <div class="row" v-if="!largeDevice()">
                 <p class="welcome">Hello {{props.username}}!</p>
                 <ion-icon name="menu-outline" @click="showMenu = !showMenu" class="icon"></ion-icon>
             </div>
 
-
-            <div class="listOfCities" v-if="viewportWidth()">
-
+            <div class="leftSection" v-if="largeDevice()">
+                <!-- Welcome row displayed on larger devices -->
                 <div class="row">
                     <p class="welcome">Hello {{props.username}}!</p>
+
+                    <div class="options desktopOptions">
+                        <div class="row toggleRow" @click="$emit('toggleValue', props.username, 'deg'), getForecast(currentCity)">
+                            <Transition name="slide-up">
+                                <div v-if="!currentUser.celsius" class="value">Fahrenheit</div>
+                                <div v-else class="value">Celsius</div>
+                            </Transition>
+                        </div>                        
+                        <div class="row toggleRow" @click="$emit('toggleValue', props.username, 'speed'), getForecast(currentCity)">
+                            <Transition name="slide-up">
+                                <div v-if="!currentUser.mph" class="value" >km/h</div>
+                                <div v-else class="value">mph</div>
+                            </Transition>
+                        </div>
+                    </div>
                 </div>
 
+                <!-- Search for cities for desktop-->
                 <form @submit.prevent="getForecast(searchValue)">
-                    <input type="search" placeholder="Search for city" v-model="searchValue" @input="filterCities()">
-                    <div class="dropdownList" v-if="searchValue.length > 0">
-                        <p v-for="city in filteredCities" @click="getForecast(city.name)">{{city.name}}</p>
-                    </div>
+                    <input type="search" placeholder="Search for city" v-model="searchValue">
+                    <ion-icon @click="getForecast(searchValue), showMenu = false" style="font-size:2rem; cursor: pointer;" name="search-outline"></ion-icon>
                 </form>
 
-                <div class="savedCitiesWrapper">
+                <!-- Saved cities for desktop -->
+                <div class="savedCitiesWrapper" v-if="currentUser.savedCities.length > 0">
                     <p>Your saved places</p>
                     <div class="savedCities">
                         <p v-for="city in currentUser.savedCities" @click="getForecast(city)">{{city}}</p>
                     </div>
                 </div>
 
+                <!-- Five day forecast for upcoming days DESKTOP -->
                 <div class="upcomingDays">
-                    <div class="day" v-for="forecastDay in forecast">
-                        <p>{{forecastDay.name}}</p>
-                        <div>
-                            <img :src="forecastDay.iconUrl" :alt="forecastDay.weather" class="forecastIcon">
-                            {{forecastDay.temp}}
-                        </div>
-                        <div style="width: 9em">
-                            <img src="./wind.webp" alt="wind:" class="forecastIcon wind">
-                            {{forecastDay.windSpeed}}km/h
-                        </div>
+                    <div class="day" v-for="forecastDay in forecast" @click="forecastDay.showSecondary = !forecastDay.showSecondary">
+                        <Transition name="slide-up">
+                            <div class="mainData" v-if="!forecastDay.showSecondary">
+                                <p>{{forecastDay.name}}</p>
+                                <div style="width: 5.5em;">
+                                    <img :src="forecastDay.iconUrl" :alt="forecastDay.weather" class="forecastIcon">
+                                    {{forecastDay.temp}}
+                                </div>
+                                <div style="width: 9em; margin-left: 1em;">
+                                    <img src="./wind.webp" alt="wind:" class="forecastIcon wind">
+                                    <p>{{forecastDay.windSpeed}}
+                                        <span v-if="currentUser.mph" style="font-size: .8rem; color: gray;">mph</span>
+                                        <span v-else style="font-size: .8rem; color: gray;">km/h</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="secondaryData" v-else>
+                                <p>Pressure: {{forecastDay.pressure}}<span style="font-size: .8rem; color: gray;"> hPa</span> | Humidity: {{forecastDay.humidity}}%</p>
+                            </div>
+                        </Transition>
                     </div>
                 </div>
 
             </div>
 
-
+            <!-- Weather section -->
             <div class="weather">
-                <ion-icon name="add-outline" class="addCityIcon" @click="$emit('addCity', props.username, currentCity)"></ion-icon>
+                <ion-icon v-if="!currentUser.savedCities.includes(weather.city)" name="add-outline" class="addCityIcon" @click="$emit('addCity', props.username, weather.city)"></ion-icon>
+                <ion-icon v-if="currentUser.savedCities.includes(weather.city)" name="remove-outline" class="addCityIcon" @click="$emit('removeCity', props.username, weather.city)"></ion-icon>
 
                 <p class="localization">{{weather.city}}, {{weather.country}}</p>
-                <p class="temperature">{{weather.temp}}°</p>
+                <p class="temperature">{{weather.temp}}</p>
                 <img :src="weather.iconUrl" class="weatherIcon">
                 <p class="desc">{{weather.desc}}</p>
                 <p class="maxMin">H:{{weather.tempMax}}° L: {{weather.tempMin}}°</p>
 
+                <!-- Five day forecast for upcoming days MOBILE -->
+                <div class="upcomingDays" v-if="!largeDevice()">
+                    <div class="day" v-for="forecastDay in forecast" @click="forecastDay.showSecondary = !forecastDay.showSecondary">
+                        <Transition name="slide-up">
+                            <div class="mainData" v-if="!forecastDay.showSecondary">
+                                <p>{{forecastDay.name}}</p>
+                                <div style="width: 5.5em;">
+                                    <img :src="forecastDay.iconUrl" :alt="forecastDay.weather" class="forecastIcon">
+                                    {{forecastDay.temp}}
+                                </div>
+                                <div style="width: 9em; margin-left: 1em;">
+                                    <img src="./wind.webp" alt="wind:" class="forecastIcon wind">
+                                    <p>{{forecastDay.windSpeed}}
+                                        <span v-if="currentUser.mph" style="font-size: .8rem; color: gray;">mph</span>
+                                        <span v-else style="font-size: .8rem; color: gray;">km/h</span>
+                                    </p>
+                                </div>
+                            </div>
 
-                <div class="upcomingDays" v-if="!viewportWidth()">
-                    <div class="day" v-for="forecastDay in forecast">
-                        <p>{{forecastDay.name}}</p>
-                        <div>
-                            <img :src="forecastDay.iconUrl" :alt="forecastDay.weather" class="forecastIcon">
-                            {{forecastDay.temp}}
+                            <div class="secondaryData" v-else>
+                                <p>Pressure: {{forecastDay.pressure}}<span style="font-size: .8rem; color: gray;"> hPa</span> | Humidity: {{forecastDay.humidity}}%</p>
+                            </div>
+                        </Transition>
+                    </div>
+                </div>
+
+                <!-- RAIN DIAGRAM -->
+                <div class="rainForecast">
+                    <p>Todays probability of rain:</p>
+                    <div class="columnContainer">
+                        <div class="columnWrapper mm">
+                            <p style="color: gray;">%</p>
+                            <div class="columnScale ">
+                                <p>100</p>
+                                <p>50</p>
+                                <p>0</p>
+                            </div>
                         </div>
-                        <div style="width: 9em">
-                            <img src="./wind.webp" alt="wind:" class="forecastIcon wind">
-                            {{forecastDay.windSpeed}}km/h
+
+                            <div class="columnWrapper" v-for="data of nextFiveHour">
+                                <div class="column" :style="{height: (data.pop*1.6)+'px'}"></div>
+                                <p>{{data.time}}</p>
+                            </div>
+
+                        <div class="columnWrapper">
+                            <div class="columnScale">
+
+                            </div>
+                            <p style="color: gray;">hour</p>
                         </div>
                     </div>
                 </div>
@@ -112,63 +190,14 @@ const props = defineProps({
     users: Array
 })
 
-const cities = [
-    {
-        "id": 2510911,
-        "name": "Sevilla",
-        "state": "",
-        "country": "ES",
-        "coord": {
-            "lon": -5.97613,
-            "lat": 37.382408
-        }
-    },
-    {
-        "id": 2643743,
-        "name": "London",
-        "state": "",
-        "country": "GB",
-        "coord": {
-            "lon": -0.12574,
-            "lat": 51.50853
-        }
-    },
-    {
-        "id": 2968815,
-        "name": "Paris",
-        "state": "",
-        "country": "FR",
-        "coord": {
-            "lon": 2.3486,
-            "lat": 48.853401
-        }
-    },
-    {
-        "id": 3067696,
-        "name": "Prague",
-        "state": "",
-        "country": "CZ",
-        "coord": {
-            "lon": 14.42076,
-            "lat": 50.088039
-        }
-    }
-]
-
-const weather = ref({
-        country: ' ',
-        city: ' ',
-        temp: ' ',
-        desc: ' ',
-        tempMin: ' ',
-        tempMax: ' ',
-        iconUrl: ' '
-    })
+const weather = ref({})
 const searchValue = ref('')
 const currentUser = ref()
 const showMenu = ref(false)
 const forecast = ref([])
 const currentCity = ref('Rzeszów')
+const nextFiveHour = ref([])
+const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 for(let i=0; i<props.users.length; i++) {
     if(props.users[i].login == props.username) {
@@ -176,44 +205,18 @@ for(let i=0; i<props.users.length; i++) {
     }
 }
 
-
-const filteredCities = ref(cities)
-const filterCities = () => {
-    filteredCities.value = cities
-    if(searchValue.value.length != 0) {
-        const capitalized = searchValue.value.charAt(0).toUpperCase() + searchValue.value.slice(1)
-        filteredCities.value =  filteredCities.value.filter((city) => (city.name.includes(capitalized)))
-    }
-}
-
-const viewportWidth = () => {
+const largeDevice = () => {
     if(document.documentElement.clientWidth > 800)
     return true
 }
 
-const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-
-
-
-const weekdaysInOrder = ref([])
-
 const getForecast = async (givenName) => {
 
     currentCity.value = givenName
-
     const apiKey = '1d1192606d965909ab4f45aa700295af'
     searchValue.value = ''
 
-    const today = new Date();
-    let weekday = today.getDay()
-    for(let i=0; i<5; i++) {
-        weekdaysInOrder.value.push(weekdays[weekday])
-        weekday++ 
-        if(weekday==7) weekday = 0
-    }
-
-    
-    let response = await fetch("http://api.openweathermap.org/data/2.5/forecast?q="+givenName+"&appid="+apiKey+'&units=metric')
+    let response = await fetch("https://api.openweathermap.org/data/2.5/forecast?q="+givenName+"&appid="+apiKey+'&units=metric')
     const upcoming = await response.json()
     if(!response.ok) return
 
@@ -223,33 +226,50 @@ const getForecast = async (givenName) => {
             const date = item.dt_txt.substring(0,10)
             const day = (new Date(date)).getDay()
 
+            const temp = currentUser.value.celsius ? item.main.temp : item.main.temp*1.8+32
+            const windSpeed = currentUser.value.mph ? item.wind.speed*3.6/1.609344 : item.wind.speed * 3.6
+
             forecast.value.push({
                 name: weekdays[day],
-                temp: Math.round(item.main.temp)+'°',
+                temp: Math.round(temp)+'°',
                 weather: item.weather[0].description,
-                iconUrl: "http://openweathermap.org/img/wn/"+item.weather[0].icon+"@2x.png",
-                windSpeed: Math.round(item.wind.speed * 3.6)
+                iconUrl: "https://openweathermap.org/img/wn/"+item.weather[0].icon+"@2x.png",
+                windSpeed: Math.round(windSpeed),
+                showSecondary: false,
+                pressure: item.main.pressure,
+                humidity: item.main.humidity
             })
         }
     }
 
+    nextFiveHour.value = []
+    for(let i=0; i<5; i++) {
+        const data = upcoming.list[i]
+        nextFiveHour.value.push({
+            pop: Math.round(data.pop*100),
+            time: data.dt_txt.substring(11, 13)
+        })
+    }
 
     response = await fetch("https://api.openweathermap.org/data/2.5/weather?q="+givenName+"&appid="+apiKey+"&units=metric")
     const current = await response.json()
+    const temp = currentUser.value.celsius ? current.main.temp : current.main.temp*1.8+32
+
     weather.value = {
         country: current.sys.country,
         city: current.name,
-        temp: Math.round(current.main.temp),
+        temp: Math.round(temp)+'°',
         desc: current.weather[0].description,
         tempMin: Math.round(current.main.temp_min),
         tempMax: Math.round(current.main.temp_max),
         iconUrl: "http://openweathermap.org/img/wn/"+current.weather[0].icon+"@2x.png"
     }
 }
-
 getForecast('Prague')
 
-
+setInterval(()=> {
+    getForecast(currentCity.value)
+},60000)
 
 </script>
 
@@ -258,14 +278,19 @@ getForecast('Prague')
     * {
         font-weight: 400;
     }
-
     .container {
         width: 100%;
         display: flex;
         justify-content: center;
         background: rgb(159, 159, 252);
+        min-height: 100vh;
     }
-
+    form {
+        display: flex;
+        align-items: center;
+        width: max-content;
+        gap: .5em;
+    }
     .menu {
         background: rgb(159, 159, 252);
         position: absolute;
@@ -293,8 +318,8 @@ getForecast('Prague')
             border-radius: 15px;
             color: white;
             padding: 1em;
+            position: relative;
         }
-
         .menu .row {
             background: transparent;
             color: black;
@@ -302,8 +327,21 @@ getForecast('Prague')
         .menu .row .icon {
             color: black;
         }
+        .value {
+            position: absolute;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+        .toggleRow {
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
 
-
+    .desktopOptions {
+        right: 7em;
+        display: flex;
+        width: 250px;
+    }
     .wrapper {
         padding: .5em;
         display: flex;
@@ -313,14 +351,15 @@ getForecast('Prague')
         background: rgb(159, 159, 252);
         border-radius: 20px;
         gap: 1em;
-        align-items:flex-start;
+        align-items: stretch;
     }
 
     .welcome {
         font-size: 2rem;
+        width: max-content;
     }
 
-    .listOfCities {
+    .leftSection {
         padding: .5em;
         width: 100%;
         margin: auto;
@@ -331,9 +370,8 @@ getForecast('Prague')
         display: flex;
         flex-direction: column;
     }
-
     input {
-        width: 325px;
+        width: 300px;
         margin-inline: auto;
         font-size: 1rem;
         padding: .5em;
@@ -341,28 +379,6 @@ getForecast('Prague')
         background: rgb(236, 236, 236);
         border-radius: 30px;
     }
-
-    .dropdownList {
-        position: absolute;
-        margin-top: .1em;
-        width: 325px;
-        background: rgb(236, 236, 236);
-        border-radius: 10px;
-        padding: .5em;
-        left: .5em;
-        display: flex;
-        gap: .1em;
-        flex-direction: column;
-    }
-
-        .dropdownList p {
-            cursor: pointer;
-            padding: .3em 1em;
-        }
-        .dropdownList p:hover {
-            background: lightgray;
-        }
-
     .savedCitiesWrapper {
         background: rgba(255, 255, 255, 0.527);
         width: 100%;
@@ -370,13 +386,12 @@ getForecast('Prague')
         padding: .5em;
         border-radius: 20px;
     }
-
-    .savedCities {
-        display: flex;
-        gap: .5em;
-        padding: .5em 0;
-        flex-wrap: wrap;
-    }
+        .savedCities {
+            display: flex;
+            gap: .5em;
+            padding: .5em 0;
+            flex-wrap: wrap;
+        }
         .savedCities p {
             padding: .5em;
             background: rgb(235, 235, 235);
@@ -395,15 +410,29 @@ getForecast('Prague')
         gap: .5em;
         padding: 1em;
         color: white;
-        height: 100%;
         position: relative;
     }
+        .weatherIcon {
+            width: 10rem;
+            transform: translateY(-50px);
+            margin-bottom: -50px;
+        }
+        .addCityIcon {
+            font-size: 2rem;
+            position: absolute;
+            right: .7em;
+            cursor: pointer;
+        }
+        .localization {
+            font-size: 1.3rem;
+        }
+        .temperature {
+            font-size: 5rem;
+        }
 
-    .weatherIcon {
-        width: 10rem;
-        transform: translateY(-50px);
-        margin-bottom: -50px;
-    }
+        .desc {
+            text-transform: capitalize;
+        }
 
     .upcomingDays {
         display: flex;
@@ -412,77 +441,106 @@ getForecast('Prague')
         width: 100%;
         max-width: 400px;
     }
-
-    .upcomingDays .day {
-        background: rgba(255, 255, 255, 0.11);
-        display: flex;
-        align-items: center;
-        padding: .5em 1em;
-        border-radius: 20px;
-        gap: 1em;
-    }
-        .forecastIcon {
-            width: 3.5rem;
-        }
-        .upcomingDays .day p {
-            min-width: 6em;
-        }
-
-        .upcomingDays .day div {
+        .upcomingDays .day {
+            background: rgba(255, 255, 255, 0.11);
             display: flex;
             align-items: center;
+            padding: .5em 1em;
+            border-radius: 20px;
+            gap: 1em;
+            cursor: pointer;
+            height: 70px;
+        }
+            .secondaryData, .mainData {
+                position: absolute;
+            }
+            .forecastIcon {
+                width: 3.5rem;
+            }
+            .wind {
+                width: 2rem;
+            }
+            .upcomingDays .day p {
+                min-width: 6em;
+            }
+            .upcomingDays .day div {
+                display: flex;
+                align-items: center;
+            }
+
+    .rainForecast {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        margin-top: 2em;
+        gap: 1.3em;
+    }
+    .columnContainer {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+        .columnWrapper {
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: end;
+            align-items: center;
+
+        }
+        .columnScale {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            color: gray;
         }
 
-    .forecastIcon {
-        display: inline-block;
-    }
-    .wind {
-        width: 2rem;
-    }
+        .mm {
+            transform: translateY(-1.2em);
+        }
+        .column {
+            background: rgb(78, 169, 255);
+            width: 1em;
+            border-radius: 10px;
+            min-height: 2px;
+        }
 
-    .localization {
-        font-size: 1.3rem;
-    }
+/* T R A N S I T I O N S */
+.slide-up-enter-active, .slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
 
-    .temperature {
-        font-size: 5rem;
-    }
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(30px);
+}
 
-    .desc {
-        text-transform: capitalize;
-    }
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+}
 
-    .addCityIcon {
-        font-size: 2rem;
-        position: absolute;
-        right: .7em;
-        cursor: pointer;
-    }
-
-    .slide-enter-active, .slide-leave-active {
-        transition: 300ms;
-    }
-
-    .slide-enter-to, .slide-leave-from {
-        transform: none;
-    }
-
-    .slide-enter-from, .slide-leave-to {
-        transform: translateX(-100%);
-    }
-
-
-
+.slide-enter-active, .slide-leave-active {
+    transition: 300ms;
+}
+.slide-enter-to, .slide-leave-from {
+    transform: none;
+}
+.slide-enter-from, .slide-leave-to {
+    transform: translateX(-100%);
+}
 
 @media only screen and (min-width: 800px) {
     .weather {
-        height: 100%;
+        /* height: 100%; */
         width: 30%;
         border-radius: 0px;
         border-radius: 20px;
     }
-    .listOfCities {
-        height: 100%;
+    .leftSection {
+        /* height: 100%; */
         width: 70%;
         border-radius: 0px;
         border-radius: 20px;
@@ -501,7 +559,6 @@ getForecast('Prague')
         }
     .container {
         background: rgb(17, 14, 61);
-        min-height: 100vh;
         align-items: center;
     }
     .row {
